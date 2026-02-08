@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeStars | محمل الفيديوهات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WeStars </title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,22 +15,26 @@
             --input-border: #2d2d30;
             --accent: #00d1b2;
             --text: #ffffff;
+            --text-dim: #a0a0a0;
             --error: #ff4757;
             --star-color: #f1c40f;
+            --tiktok-bg: #000000;
         }
 
         [data-theme="light"] {
             --bg: #f5f6fa;
             --card: #ffffff;
             --input-border: #dcdde1;
-            --text: #2f3640;
+            --text: #1a1a1c;
+            --text-dim: #57606f;
+            --tiktok-bg: #000000; /* يظل أسود في الثيم الفاتح */
         }
 
-        /* منع الإيماءة الزرقاء عند الضغط وتطبيق الخط على كل شيء */
         * { 
             transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; 
-            -webkit-tap-highlight-color: transparent; /* إلغاء الوميض الأزرق */
+            -webkit-tap-highlight-color: transparent;
             font-family: 'IBM Plex Sans Arabic', sans-serif;
+            box-sizing: border-box;
         }
 
         body {
@@ -39,37 +43,68 @@
             margin: 0; padding: 20px;
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; position: relative;
+            overflow-x: hidden;
         }
 
-        .theme-toggle {
-            position: absolute; top: 25px; right: 25px;
-            width: 45px; height: 45px;
+        .top-controls {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 1000;
+        }
+
+        .icon-btn {
+            width: 42px; height: 42px;
             background: var(--card); border: 1px solid var(--input-border);
             border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--primary); font-size: 1.4rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1000;
+            cursor: pointer; color: var(--primary); font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+
+        /* القوائم العائمة (الأرشيف والمتابعة) */
+        .full-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            z-index: 2000; display: flex; flex-direction: column; align-items: center;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .full-overlay.active { transform: translateY(0); }
+        .close-overlay { align-self: flex-start; margin-bottom: 20px; font-size: 1.5rem; cursor: pointer; color: var(--primary); }
+
+        .social-card {
+            width: 100%; max-width: 400px; padding: 16px; margin-bottom: 12px;
+            border-radius: 18px; text-decoration: none; color: white !important;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            font-weight: 700; font-size: 1rem; cursor: pointer;
+        }
+
+        .social-tiktok { background: var(--tiktok-bg); border: 1px solid #333; }
+        .social-insta { background: linear-gradient(45deg, #f09433, #bc1888); }
+        .social-fb { background: #1877f2; }
+        .social-yt { background: #ff0000; }
 
         .brand {
-            font-size: 3.5rem; font-weight: 900; margin: 60px 0 40px;
+            font-size: clamp(2.5rem, 8vw, 3.5rem); 
+            font-weight: 900; margin: 80px 0 30px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 10px 20px rgba(108, 92, 231, 0.3));
+            text-align: center;
         }
 
-        .container { width: 100%; max-width: 480px; }
+        .container { width: 100%; max-width: 550px; padding: 0 10px; }
+
         .input-group { position: relative; margin-bottom: 20px; }
         
         .input-box {
-            width: 100%; padding: 22px 55px 22px 25px;
+            width: 100%; padding: 20px 55px 20px 20px;
             background: var(--card); border: 2px solid var(--input-border);
-            border-radius: 25px; color: var(--text); font-size: 1rem;
-            outline: none; box-sizing: border-box; text-align: right;
-            direction: ltr; /* لجعل الروابط الطويلة تظهر بشكل صحيح مع الخط */
+            border-radius: 22px; color: var(--text); font-size: 1rem;
+            outline: none; text-align: right; direction: ltr;
         }
+        .input-box::placeholder { direction: rtl; color: var(--text-dim); }
 
-        .input-box:focus { border-color: var(--primary); box-shadow: 0 0 25px rgba(108, 92, 231, 0.1); }
-        .paste-btn { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; font-size: 1.3rem; }
+        .paste-btn { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem; cursor: pointer; }
 
         .main-btn {
             width: 100%; padding: 18px; background: var(--primary);
@@ -78,73 +113,80 @@
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* النجمة المفرغة الفخمة */
-        .star-loader {
-            display: none;
-            font-size: 1.5rem;
-            color: transparent;
-            -webkit-text-stroke: 1.5px var(--star-color);
-            animation: starAnim 1s ease-in-out infinite;
-        }
-
-        @keyframes starAnim {
-            0% { transform: scale(1) rotate(0deg); opacity: 1; }
-            50% { transform: scale(1.3) rotate(180deg); opacity: 0.7; }
-            100% { transform: scale(1) rotate(360deg); opacity: 1; }
-        }
-
         .video-card {
-            display: none; margin-top: 30px; background: var(--card);
-            border-radius: 30px; padding: 20px; border: 1px solid var(--input-border);
-            animation: fadeIn 0.6s ease-out;
+            display: none; margin-top: 25px; background: var(--card);
+            border-radius: 25px; padding: 15px; border: 1px solid var(--input-border);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .video-preview { width: 100%; border-radius: 18px; overflow: hidden; background: #000; }
+        video { width: 100%; max-height: 500px; }
 
-        .video-preview { width: 100%; border-radius: 20px; overflow: hidden; background: #000; }
-        video { width: 100%; display: block; }
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-action { padding: 12px; border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; }
+        .btn-reset { grid-column: span 2; color: var(--text); }
 
-        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .btn-action {
-            padding: 15px; border-radius: 15px; border: none; cursor: pointer;
-            font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem;
-        }
+        /* ستايل التحميلات */
+        .history-section { width: 100%; margin-top: 30px; border-top: 1px solid var(--input-border); padding-top: 20px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .history-header h3 { font-size: 0.95rem; margin: 0; color: var(--text-dim); }
+        .archive-trigger { color: var(--primary); font-size: 1.2rem; cursor: pointer; }
 
-        .btn-download { background: var(--accent); color: white; grid-column: span 2; }
-        .btn-copy { background: var(--input-border); color: var(--text); }
-        .btn-reset { background: var(--input-border); color: #888; }
-
-        /* ستايل سجل التحميلات */
-        .history-section { width: 100%; margin-top: 40px; border-top: 1px solid var(--input-border); padding-top: 20px; }
         .history-item {
-            background: var(--card); padding: 12px 18px; border-radius: 15px;
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.85rem; border: 1px solid var(--input-border);
+            background: var(--card); padding: 15px; border-radius: 20px;
+            margin-bottom: 12px; border: 1px solid var(--input-border);
+            display: flex; align-items: center; justify-content: space-between; gap: 15px;
+            width: 100%;
         }
-        .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; direction: ltr; }
-        .history-item a { color: var(--primary); text-decoration: none; font-weight: 700; cursor: pointer; }
+
+        .history-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-height: 65px; overflow: hidden; }
+        .history-url { direction: ltr; font-size: 0.8rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 10px; }
+        .history-btn { color: var(--primary); font-weight: 700; cursor: pointer; font-size: 0.9rem; align-self: flex-start; }
+        .history-thumb { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
 
         #customAlert {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            width: 80%; max-width: 350px; background: var(--card);
-            padding: 15px; border-radius: 18px; border: 1px solid var(--input-border);
-            display: flex; align-items: center; gap: 12px; z-index: 10000;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%; max-width: 400px; background: var(--card);
+            padding: 15px; border-radius: 15px; border: 1px solid var(--input-border);
+            display: flex; align-items: center; gap: 10px; z-index: 10000;
+            transition: 0.4s ease; color: var(--text);
         }
-        #customAlert.show { top: 30px; }
+        #customAlert.show { top: 20px; }
+
+        .star-loader {
+            display: none; font-size: 1.4rem; color: transparent;
+            -webkit-text-stroke: 1.5px var(--star-color);
+            animation: starAnim 1s infinite linear;
+        }
+        @keyframes starAnim { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body data-theme="dark">
 
-    <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
-        <i class="fas fa-moon"></i>
+    <div class="top-controls">
+        <div class="icon-btn" onclick="toggleOverlay('menuOverlay')" title="القائمة"><i class="fas fa-ellipsis-v"></i></div>
+        <div class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="تغيير الثيم"><i class="fas fa-moon"></i></div>
+    </div>
+
+    <div class="full-overlay" id="menuOverlay">
+        <i class="fas fa-arrow-right close-overlay" onclick="toggleOverlay('menuOverlay')"></i>
+        <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 25px;">تابعنا على:</div>
+        <a href="https://www.tiktok.com/@72rxb" target="_blank" class="social-card social-tiktok"><i class="fab fa-tiktok"></i> تيك توك</a>
+        <a href="https://www.instagram.com/72rxb" target="_blank" class="social-card social-insta"><i class="fab fa-instagram"></i> انستغرام</a>
+        <a href="https://www.facebook.com/share/1D54JBBkJh/" target="_blank" class="social-card social-fb"><i class="fab fa-facebook-f"></i> فيسبوك</a>
+        <a href="https://youtube.com/@72rxb" target="_blank" class="social-card social-yt"><i class="fab fa-youtube"></i> يوتيوب</a>
+    </div>
+
+    <div class="full-overlay" id="archiveOverlay">
+        <i class="fas fa-arrow-right close-overlay" onclick="toggleOverlay('archiveOverlay')"></i>
+        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; width: 100%; text-align: center;">أرشيف التحميلات</div>
+        <div id="fullHistoryContainer" style="width: 100%; max-width: 550px;"></div>
     </div>
 
     <div class="brand">WeStars</div>
 
     <div class="container">
         <div class="input-group">
-            <input type="text" id="urlInput" class="input-box" placeholder="الصق الرابط هنا...">
+            <input type="text" id="urlInput" class="input-box" placeholder="...الصق الرابط هنا">
             <i class="fas fa-paste paste-btn" onclick="pasteLink()"></i>
         </div>
 
@@ -158,13 +200,19 @@
                 <video id="videoPlayer" controls playsinline></video>
             </div>
             <div class="actions">
-                <button onclick="downloadNow()" class="btn-action btn-download"><i class="fas fa-download"></i> حفظ في الجهاز</button>
-                <button onclick="copyLink()" class="btn-action btn-copy"><i class="fas fa-copy"></i> نسخ الرابط</button>
-                <button onclick="location.reload()" class="btn-action btn-reset"><i class="fas fa-redo"></i> جديد</button>
+                <button onclick="downloadNow()" class="btn-action btn-download" style="background:var(--accent);"><i class="fas fa-download"></i> حفظ </button>
+                <button onclick="copyLink()" class="btn-action btn-copy" style="background:var(--input-border); color:var(--text);"><i class="fas fa-copy"></i> نسخ</button>
+                <button onclick="location.reload()" class="btn-action btn-reset" style="background:var(--input-border);"><i class="fas fa-redo"></i> جديد</button>
             </div>
         </div>
 
-        <div class="history-section" id="historySection"></div>
+        <div class="history-section" id="historySection">
+            <div class="history-header">
+                <h3>آخر التحميلات:</h3>
+                <i class="fas fa-box-archive archive-trigger" onclick="toggleOverlay('archiveOverlay')" title="الأرشيف"></i>
+            </div>
+            <div id="mainHistoryList"></div>
+        </div>
     </div>
 
     <div id="customAlert">
@@ -175,13 +223,18 @@
     <script>
         let currentVideoLink = "";
 
+        function toggleOverlay(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+
         function toggleTheme() {
             const body = document.body;
             const themeBtn = document.getElementById('themeBtn');
             const isDark = body.getAttribute('data-theme') === 'dark';
-            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
             themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', newTheme);
         }
 
         if(localStorage.getItem('theme') === 'light') {
@@ -195,7 +248,6 @@
             document.getElementById('alertMsg').innerText = msg;
             alert.style.borderColor = type === 'error' ? 'var(--error)' : 'var(--accent)';
             icon.style.color = type === 'error' ? 'var(--error)' : 'var(--accent)';
-            icon.className = type === 'error' ? 'fas fa-times-circle' : 'fas fa-check-circle';
             alert.classList.add('show');
             setTimeout(() => alert.classList.remove('show'), 3000);
         }
@@ -204,8 +256,8 @@
             try {
                 const text = await navigator.clipboard.readText();
                 document.getElementById('urlInput').value = text;
-                notify("تم اللصق بنجاح");
-            } catch (err) { notify("حدث خطأ في اللصق", "error"); }
+                notify("تم اللصق");
+            } catch (err) { notify("خطأ في اللصق", "error"); }
         }
 
         async function processVideo() {
@@ -213,10 +265,8 @@
             const btnText = document.getElementById('btnText');
             const star = document.getElementById('starLoader');
 
-            if(!url) { notify("يرجى وضع الرابط", "error"); return; }
-            
-            btnText.style.display = 'none';
-            star.style.display = 'block';
+            if(!url) { notify("ضع الرابط أولاً", "error"); return; }
+            btnText.style.display = 'none'; star.style.display = 'block';
 
             try {
                 let apiUrl = url.includes("tiktok.com") 
@@ -225,63 +275,81 @@
 
                 const response = await fetch(apiUrl);
                 const result = await response.json();
+                
                 currentVideoLink = result.data?.play || result.video_url || result.url;
+                let thumb = result.data?.cover || result.thumbnail || result.picture || "";
 
                 if(currentVideoLink) {
                     document.getElementById('videoPlayer').src = currentVideoLink;
                     document.getElementById('resultCard').style.display = 'block';
-                    saveToHistory(url);
-                    notify("تم استخراج الفيديو ✨");
+                    saveToHistory(url, thumb);
+                    notify("تم الاستخراج ✨");
+                    window.scrollTo({ top: 100, behavior: 'smooth' });
                 } else { throw new Error(); }
-            } catch (e) {
-                notify("الرابط غير مدعوم حالياً", "error");
-            } finally {
-                btnText.style.display = 'block';
-                star.style.display = 'none';
+            } catch (e) { notify("الرابط غير مدعوم", "error"); }
+            finally { btnText.style.display = 'block'; star.style.display = 'none'; }
+        }
+
+        function saveToHistory(url, thumb) {
+            let history = JSON.parse(localStorage.getItem('ws_history_v2') || '[]');
+            history = history.filter(i => i.url !== url);
+            history.unshift({url, thumb, date: new Date().toLocaleDateString('ar-EG')});
+            localStorage.setItem('ws_history_v2', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('ws_history_v2') || '[]');
+            const mainList = document.getElementById('mainHistoryList');
+            const fullList = document.getElementById('fullHistoryContainer');
+            
+            if(history.length === 0) {
+                mainList.innerHTML = '<p style="text-align:center; opacity:0.5; font-size:0.8rem;">لا توجد تحميلات حالياً</p>';
+                return;
             }
+
+            // عرض أول 3 في الرئيسية
+            const mainItems = history.slice(0, 3);
+            mainList.innerHTML = mainItems.map(item => generateItemHTML(item)).join('');
+
+            // عرض الكل في الأرشيف
+            fullList.innerHTML = history.map(item => generateItemHTML(item)).join('');
+        }
+
+        function generateItemHTML(item) {
+            return `
+                <div class="history-item">
+                    <div class="history-content">
+                        <div class="history-url">${item.url}</div>
+                        <div class="history-btn" onclick="reDownload('${item.url}')">إعادة تحميل</div>
+                    </div>
+                    <img src="${item.thumb || ''}" class="history-thumb" onerror="this.src='https://via.placeholder.com/65/222/fff?text=Video'">
+                </div>
+            `;
+        }
+
+        function reDownload(url) {
+            document.getElementById('urlInput').value = url;
+            document.getElementById('archiveOverlay').classList.remove('active');
+            processVideo();
         }
 
         async function downloadNow() {
             if(!currentVideoLink) return;
-            notify("جاري التحميل...");
+            notify("جاري الحفظ...");
             try {
                 const res = await fetch(currentVideoLink);
                 const blob = await res.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = `WeStars_${Date.now()}.mp4`;
-                document.body.appendChild(a);
-                a.click();
+                a.href = url; a.download = `WeStars_${Date.now()}.mp4`;
+                document.body.appendChild(a); a.click();
             } catch (e) { window.open(currentVideoLink, '_blank'); }
-        }
-
-        function saveToHistory(url) {
-            let history = JSON.parse(localStorage.getItem('ws_history') || '[]');
-            if(!history.includes(url)) {
-                history.unshift(url);
-                history = history.slice(0, 3);
-                localStorage.setItem('ws_history', JSON.stringify(history));
-                renderHistory();
-            }
-        }
-
-        function renderHistory() {
-            const history = JSON.parse(localStorage.getItem('ws_history') || '[]');
-            const container = document.getElementById('historySection');
-            if(history.length === 0) return;
-            container.innerHTML = '<h3 style="font-size:1rem; margin-bottom:15px;">آخر التحميلات:</h3>' + 
-                history.map(url => `
-                    <div class="history-item">
-                        <span>${url}</span>
-                        <a onclick="document.getElementById('urlInput').value='${url}'; processVideo();">تحميل</a>
-                    </div>
-                `).join('');
         }
 
         function copyLink() {
             navigator.clipboard.writeText(currentVideoLink);
-            notify("تم نسخ الرابط");
+            notify("تم النسخ");
         }
 
         window.onload = renderHistory;
