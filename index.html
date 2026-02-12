@@ -378,9 +378,9 @@
 
     <script>
         // --- Firebase Config & Init ---
-        // ملاحظة: هذا حساب تجريبي عام للتعليقات
+        // تم تحديث الرابط بنجاح إلى رابطك الجديد
         const firebaseConfig = {
-            databaseURL: "https://westars-reviews-default-rtdb.firebaseio.com/"
+            databaseURL: "https://westrts-d4078-default-rtdb.firebaseio.com/"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -407,7 +407,7 @@
                 commentInput.value = "";
                 if(starInput) starInput.checked = false;
                 notify("تم إرسال تقييمك بنجاح ✨");
-            }).catch(() => notify("فشل الإرسال", "error"));
+            }).catch(() => notify("فشل الإرسال - تأكد من الـ Rules", "error"));
         }
 
         // الاستماع للتعليقات من Firebase فوراً
