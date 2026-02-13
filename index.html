@@ -3,1227 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeStars | Pro Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <title>إلى سُلطانة قلبي ❤️</title>
     <style>
-        :root { 
-            --primary: #00d4ff; 
-            --bg-dark: #080a0f; 
-            --nav-bg: rgba(15, 18, 25, 0.98); 
-            --text: #ffffff; 
-            --glass: rgba(255, 255, 255, 0.1); 
-            --chat-bg: #0d1117;
-            --danger: #ff5b5b;
-        }
-        .light-mode { 
-            --bg-dark: #f0f2f5; 
-            --nav-bg: rgba(255, 255, 255, 0.98); 
-            --text: #1c1e21; 
-            --glass: rgba(0, 0, 0, 0.1); 
-            --chat-bg: #ffffff;
-        }
-        
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-dark); color: var(--text); overflow-x: hidden; min-height: 100vh; transition: background 0.3s; scroll-behavior: smooth; }
-
-        #chatCustomBg {
-            position: fixed; 
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed; 
-            display: none;
-            pointer-events: none;
+        :root {
+            --gold: #d4af37;
+            --red: #8b0000;
         }
 
-        nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            background: var(--nav-bg); backdrop-filter: blur(20px); 
-            padding: 10px 0; display: flex; justify-content: space-around; 
-            z-index: 1000; border-top: 1px solid var(--glass); height: 70px; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif; /* تم إزالة IBM Plex Sans Arabic */
         }
-        nav a { 
-            color: #888; text-decoration: none; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; font-size: 0.85rem; flex: 1; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        nav a i { font-size: 1.4rem; margin-bottom: 4px; transition: 0.3s; }
-        nav a.active { color: var(--primary); font-weight: 800; transform: translateY(-5px); }
-        nav a.active i { transform: scale(1.2); }
 
-        section { min-height: 100vh; width: 100%; display: none; flex-direction: column; opacity: 0; transition: 0.3s ease-in-out; }
-        section.active { display: flex; opacity: 1; }
-
-        .chat-list-container { padding-bottom: 80px; }
-        .chat-header { 
-            padding: 15px 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            border-bottom: 1px solid var(--glass); 
-            flex-direction: row; 
-        }
-        .chat-item { display: flex; align-items: center; padding: 12px 15px; gap: 12px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
-        .chat-item:active { background: var(--glass); }
-        .chat-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #333; }
-        .chat-info { flex: 1; overflow: hidden; }
-        .chat-info-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .chat-name { font-weight: 800; font-size: 1rem; }
-        .chat-time { font-size: 0.7rem; color: #888; }
-        .chat-last-msg { font-size: 0.85rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-badge { background: var(--primary); color: #000; font-size: 0.7rem; font-weight: bold; min-width: 20px; height: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
-
-        #searchContainer { display: none; padding: 10px 15px; background: var(--nav-bg); border-bottom: 1px solid var(--glass); }
-        #searchContainer input { width: 100%; background: var(--glass); border: none; padding: 10px 15px; border-radius: 12px; color: #fff; outline: none; }
-
-        #chatWindow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 3000; display: none; flex-direction: column; }
-        .chat-win-header { padding: 10px 15px; border-bottom: 1px solid var(--glass); display: flex; align-items: center; gap: 15px; background: var(--nav-bg); z-index: 3005;}
-        #chatMessages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; z-index: 5; position: relative; padding-top: 60px; scroll-behavior: smooth; }
-        
-        .msg-bubble { 
-            max-width: 85%; 
-            padding: 10px 14px; 
-            border-radius: 18px; 
-            font-size: 0.95rem; 
-            line-height: 1.4; 
-            position: relative; 
-            word-wrap: break-word; 
-            z-index: 10; 
-            transition: transform 0.1s ease-out; 
-            cursor: pointer; 
-        }
-        .msg-bubble.active-msg { z-index: 100 !important; }
-
-        .msg-sent { align-self: flex-start; background: var(--primary); color: #000; border-bottom-right-radius: 4px; }
-        .msg-received { align-self: flex-end; background: var(--glass); color: #fff; border-bottom-left-radius: 4px; backdrop-filter: blur(5px); }
-        .msg-time { display: block; font-size: 0.65rem; margin-top: 5px; color: inherit; opacity: 0.7; font-weight: 500; text-align: left; }
-        
-        .msg-bubble::before {
-            content: '\f3e5';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            color: var(--primary);
-            opacity: 0;
-            transition: 0.1s;
-        }
-        .msg-received::before { left: -40px; }
-        .msg-sent::before { right: -40px; transform: translateY(-50%) scaleX(-1); }
-
-        .chat-input-area-container { display: flex; flex-direction: column; background: var(--nav-bg); z-index: 3005; border-top: 1px solid var(--glass); }
-        
-        #replyPreviewBox { 
-            display: none; 
-            padding: 8px 15px; 
-            background: rgba(255,255,255,0.05); 
-            border-right: 4px solid var(--primary); 
-            margin: 5px 10px; 
-            border-radius: 8px; 
-            position: relative;
-        }
-        #replyPreviewBox p { font-size: 0.8rem; color: var(--primary); font-weight: bold; }
-        #replyPreviewBox span { font-size: 0.75rem; color: #aaa; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .close-reply { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888; cursor: pointer; }
-
-        .chat-input-area { padding: 10px; display: flex; gap: 10px; align-items: center; }
-        .chat-input-area input { flex: 1; background: var(--glass); border: none; padding: 12px 15px; border-radius: 25px; color: #fff; outline: none; }
-
-        .quoted-msg {
-            background: rgba(0,0,0,0.1);
-            padding: 5px 10px;
-            border-right: 3px solid rgba(0,0,0,0.3);
-            border-radius: 5px;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-            color: rgba(0,0,0,0.6);
-            display: -webkit-box;
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical;
+        body {
+            background: #000;
+            height: 100vh;
             overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer; 
-        }
-        .msg-received .quoted-msg {
-            background: rgba(255,255,255,0.05);
-            border-right: 3px solid var(--primary);
-            color: #ccc;
-        }
-
-        .msg-menu-pop { 
-            position: absolute; background: #1a1d26; border: 1px solid var(--glass); 
-            border-radius: 15px; display: none; z-index: 9999; overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); min-width: 170px;
-            transform-origin: top right;
-            animation: menuZoom 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes menuZoom {
-            from { opacity: 0; transform: scale(0.85); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .msg-menu-pop button { 
-            display: block; width: 100%; padding: 13px 18px; color: white; border: none; 
-            background: none; text-align: right; font-size: 0.9rem; cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
-        }
-        .msg-menu-pop button:last-child { border-bottom: none; }
-        .msg-menu-pop button:hover { background: rgba(0, 212, 255, 0.15); color: var(--primary); }
-
-        .reaction-bar {
-            position: absolute;
-            top: -55px;
-            right: 0;
-            background: var(--nav-bg);
-            border: 1px solid var(--primary);
-            border-radius: 30px;
-            padding: 5px 12px;
-            display: flex;
-            gap: 10px;
-            z-index: 200;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            backdrop-filter: blur(15px);
-            white-space: nowrap;
-            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: auto;
-        }
-        .reaction-bar span { font-size: 1.4rem; cursor: pointer; transition: 0.2s; display: inline-block; }
-        .reaction-bar span:hover { transform: scale(1.3); }
-        
-        @keyframes popIn { 
-            from { transform: scale(0.8) translateY(10px); opacity: 0; } 
-            to { transform: scale(1) translateY(0); opacity: 1; } 
-        }
-
-        .floating-reaction {
-            position: fixed;
-            z-index: 9999;
-            font-size: 2.5rem;
-            pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-150px) scale(2); opacity: 0; }
-        }
-        
-        .msg-reactions {
-            position: absolute; bottom: -12px; left: 8px;
-            display: flex; gap: 3px; pointer-events: none;
-            z-index: 20;
-        }
-        .reaction-tag.new-reaction {
-            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0); }
-            70% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-        .reaction-tag {
-            background: var(--nav-bg); border: 1px solid var(--glass);
-            padding: 1px 6px; border-radius: 10px; font-size: 0.75rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        #editMsgModal { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); 
-            padding: 15px; z-index: 6000; display: none; flex-direction: column; 
-            gap: 10px; border-top: 1px solid var(--glass); 
-        }
-
-        #chatImgModal {
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); 
-            padding: 15px; z-index: 7000; display: none; flex-direction: column; 
-            gap: 15px; border-top: 1px solid var(--glass); animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .plus-menu {
-            position: absolute; left: 15px; top: 50px; background: #1a1d26; 
-            border: 1px solid var(--glass); border-radius: 10px; display: none; 
-            z-index: 1100; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
-            min-width: 150px;
-        }
-        .plus-menu button {
-            display: block; width: 100%; padding: 12px 20px; color: white; border: none; 
-            background: none; text-align: right; font-size: 0.85rem; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-        }
-        .plus-menu button:last-child { border-bottom: none; }
-        .plus-menu button:hover { background: var(--glass); }
-
-        #createChannelModal, #createGroupModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); 
-            z-index: 8000; display: none; flex-direction: column;
-        }
-
-        .profile-container { padding-top: 20px; }
-        .profile-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 20px; }
-        .profile-user-side { display: flex; align-items: center; gap: 15px; flex-direction: row-reverse; }
-        .profile-avatar { width: 75px; height: 75px; border-radius: 20px; border: 2px solid var(--primary); background: #555 center/cover; }
-        .profile-info-text { text-align: left; }
-        .profile-info-text h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; }
-        .lvl-container { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #aaa; }
-        .xp-bar-bg { width: 100px; height: 6px; background: rgba(128, 128, 128, 0.2); border-radius: 10px; overflow: hidden; }
-        .xp-bar-fill { height: 100%; background: var(--primary); width: 60%; box-shadow: 0 0 10px var(--primary); }
-        .lvl-badge { color: var(--primary); font-weight: 800; }
-
-        .menu-list { padding: 0 20px 100px; }
-        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--glass); cursor: pointer; }
-        .item-left { display: flex; align-items: center; gap: 12px; }
-
-        .moments-container { padding: 20px 15px 100px; }
-        .publish-box { background: var(--glass); border-radius: 15px; padding: 15px; display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
-        .moment-card { background: var(--glass); border-radius: 20px; padding: 15px; margin-bottom: 15px; position: relative; word-wrap: break-word; }
-        
-        .post-options-btn { color: #888; cursor: pointer; padding: 5px; }
-        .post-menu, .comment-pop { 
-            position: absolute; left: 15px; background: #1a1d26; 
-            border: 1px solid var(--glass); border-radius: 10px; display: none; 
-            z-index: 100; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
-            min-width: 130px;
-        }
-        .post-menu { top: 40px; }
-        .comment-pop { top: 30px; }
-        
-        .post-menu button, .comment-pop button { 
-            display: block; width: 100%; padding: 12px 20px; color: white; border: none; 
-            background: none; text-align: right; font-size: 0.85rem; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-        }
-        .post-menu button:last-child, .comment-pop button:last-child { border-bottom: none; }
-        .post-menu button:hover, .comment-pop button:hover { background: var(--glass); }
-
-        .comments-list { 
-            background: rgba(0,0,0,0.15); 
-            border-radius: 12px; 
-            padding: 8px; 
-            margin-top: 8px; 
-            max-height: 200px; 
-            overflow-y: auto; 
-        }
-        .comment-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.03); position: relative; }
-        .comment-item:last-child { border-bottom: none; }
-        .comment-avatar { width: 30px; height: 30px; border-radius: 50%; background: #555 center/cover; flex-shrink: 0; border: 1px solid var(--glass); }
-        .comment-content { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-        
-        .comment-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .comment-name { color: var(--primary); font-weight: bold; font-size: 0.75rem; cursor: pointer; position: relative; }
-        .comment-date { font-size: 0.6rem; color: #666; }
-        
-        .comment-text { font-size: 0.85rem; color: #eee; word-break: break-word; }
-        .reply-tag { color: #4caf50; font-weight: bold; }
-
-        .overlay-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 2000; display: none; flex-direction: column; }
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--glass); }
-        .list-item { display: flex; flex-direction: column; padding: 15px 20px; border-bottom: 1px solid var(--glass); }
-        .input-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-        .list-item input { border: none; outline: none; text-align: left; color: var(--primary); background: transparent; width: 60%; font-size: 0.95rem; }
-        .error-hint { color: #ff5b5b; font-size: 0.75rem; margin-top: 5px; display: none; }
-
-        #commentModal, #editPostModal { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); 
-            padding: 15px; z-index: 6000; display: none; flex-direction: column; 
-            gap: 10px; border-top: 1px solid var(--glass); 
-        }
-
-        .preview-img-container { width: 100%; display: none; position: relative; margin-top: 10px; }
-        .preview-img-container img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; border: 1px solid var(--primary); }
-        .remove-img-btn { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        #fullImageOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999;
-            display: none; align-items: center; justify-content: center;
-        }
-        #fullImageOverlay img { max-width: 95%; max-height: 90%; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-
-        #chatInfoPage { z-index: 4000; }
-        
-        .confirm-popup {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #1a1d26; padding: 25px; border-radius: 20px; width: 85%;
-            z-index: 9000; display: none; flex-direction: column; gap: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.7); border: 1px solid var(--glass);
-            animation: popIn 0.3s ease;
-        }
-
-        #bgActionSheet {
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); 
-            padding: 20px; z-index: 9500; display: none; flex-direction: column; 
-            gap: 15px; border-top: 1px solid var(--glass); border-radius: 25px 25px 0 0;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-            animation: slideUp 0.3s ease;
-        }
-        .bg-action-btn {
-            padding: 15px; border-radius: 15px; border: none; background: var(--glass);
-            color: white; font-weight: bold; text-align: right; font-size: 1rem;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-
-        #cropContainer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: none; flex-direction: column;
-        }
-
-        .tiktok-tabs {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 0;
-            background: var(--bg-dark);
-            z-index: 100;
-            padding: 10px 0;
+            align-items: center;
+            background: radial-gradient(circle, #250101 0%, #000 100%);
         }
-        .tiktok-tab {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #888;
-            cursor: pointer;
+
+        /* حاوية الهدية */
+        #gift-wrapper {
             position: relative;
-            transition: 0.3s;
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .tiktok-tab.active {
-            color: var(--text);
-            font-weight: 800;
+
+        .gift-lid {
+            width: 160px;
+            height: 30px;
+            background: #b22222;
+            border-radius: 4px;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+            border-bottom: 2px solid rgba(0,0,0,0.2);
         }
-        .tiktok-tab.active::after {
+
+        .gift-body {
+            width: 140px;
+            height: 110px;
+            background: var(--red);
+            border-radius: 0 0 4px 4px;
+            position: relative;
+            margin-top: -5px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .gift-lid::after, .gift-body::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 20%;
-            width: 60%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 100%;
+            background: var(--gold);
         }
-        .tab-content {
+
+        /* الكرت الرئيسي */
+        #main-card {
             display: none;
-            width: 100%;
-            animation: fadeInTab 0.4s ease;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fadeInTab {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .system-msg {
-            align-self: center;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: #888;
-            margin: 10px 0;
+            width: 95%;
+            max-width: 500px;
+            max-height: 90vh;
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid var(--gold);
+            border-radius: 25px;
+            padding: 25px;
             text-align: center;
-            width: fit-content;
+            color: #fff;
+            animation: popUp 0.8s ease-out forwards;
+            z-index: 20;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
         }
 
-        /* ----- تعديلات قائمة التحويل ----- */
-        #forwardSheet {
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            background: var(--nav-bg); border-top: 1px solid var(--glass);
-            border-radius: 30px 30px 0 0; z-index: 9999; display: none; 
-            flex-direction: column; max-height: 85vh; 
-            box-shadow: 0 -10px 50px rgba(0,0,0,0.9);
-            animation: slideUpForward 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.8) translateY(50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        @keyframes slideUpForward {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .forward-header {
-            padding: 20px; border-bottom: 1px solid var(--glass);
-            display: flex; flex-direction: column; gap: 15px;
-        }
-        .forward-search-box {
-            position: relative; width: 100%;
-        }
-        .forward-search-box input {
-            width: 100%; background: var(--glass); border: none; padding: 12px 40px 12px 15px;
-            border-radius: 15px; color: #fff; outline: none; font-size: 0.9rem;
-        }
-        .forward-search-box i {
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            color: #888;
-        }
-        .forward-list { flex: 1; overflow-y: auto; padding: 10px 0; }
-        .forward-item { 
-            display: flex; align-items: center; padding: 12px 20px; gap: 12px; 
-            cursor: pointer; transition: 0.3s;
-        }
-        .forward-item.selected { background: rgba(0, 212, 255, 0.1); }
-        .check-circle {
-            width: 24px; height: 24px; border: 2px solid #555; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent;
-        }
-        .selected .check-circle { border-color: var(--primary); background: var(--primary); color: #000; }
+
+        .card-title { color: var(--gold); margin-bottom: 20px; font-size: 1.6rem; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
         
-        /* ----- ميزة الصور المتعددة وتصميم الماسنجر ----- */
-        .multi-img-grid {
-            display: grid; gap: 5px; border-radius: 15px; overflow: hidden; margin-bottom: 5px;
+        .card-text { 
+            line-height: 1.9; 
+            font-size: 1.2rem; 
+            text-align: justify; 
+            margin-bottom: 40px;
+            color: #f0f0f0;
+            white-space: pre-wrap;
+        }
+
+        /* حاوية الفيديوهات المستخرجة */
+        .video-container {
             width: 100%;
-        }
-        .img-grid-1 { grid-template-columns: 1fr; }
-        .img-grid-2 { grid-template-columns: 1fr 1fr; height: 200px; }
-        .img-grid-3 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: 250px; }
-        .img-grid-3 img:nth-child(1) { grid-row: span 2; }
-        .img-grid-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: 250px; }
-        .img-grid-5 { grid-template-columns: 2fr 2fr; grid-template-rows: 1fr 1fr 1fr; height: 300px; }
-        .img-grid-5 img:nth-child(1) { grid-row: span 2; }
-        .img-grid-5 img:nth-child(2) { grid-row: span 3; }
-        
-        .multi-img-grid img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
-
-        .messenger-stack {
-            position: relative; width: 140px; height: 160px; margin-bottom: 10px; margin-top: 5px;
-        }
-        .messenger-stack img {
-            position: absolute; width: 120px; height: 140px; border-radius: 15px;
-            object-fit: cover; border: 2px solid var(--nav-bg); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.3s;
-        }
-        .messenger-stack img:nth-child(1) { z-index: 5; transform: rotate(-3deg); left: 0; }
-        .messenger-stack img:nth-child(2) { z-index: 4; transform: translate(10px, 5px) rotate(2deg); opacity: 0.9; left: 0; }
-        .messenger-stack img:nth-child(3) { z-index: 3; transform: translate(20px, 10px) rotate(5deg); opacity: 0.8; left: 0; }
-        
-        .multi-preview-container {
-            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
-        }
-        .preview-item {
-            position: relative; width: 60px; height: 60px;
-        }
-        .preview-item img { width: 100%; height: 100%; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); }
-        .preview-item .remove {
-            position: absolute; top: -5px; right: -5px; background: red; color: #fff;
-            width: 18px; height: 18px; border-radius: 50%; font-size: 10px;
-            display: flex; align-items: center; justify-content: center; z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        /* ستايل التنبيه الاحترافي */
-        #proToast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: var(--nav-bg); border: 1px solid var(--primary); color: var(--text);
-            padding: 12px 25px; border-radius: 50px; font-weight: 800; z-index: 10000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            display: flex; align-items: center; gap: 10px; pointer-events: none;
+        .custom-video {
+            width: 100%;
+            border-radius: 15px;
+            border: 1px solid var(--gold);
+            background: #000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
-        #proToast.show { transform: translateX(-50%) translateY(0); }
+
+        #hint {
+            position: absolute;
+            bottom: -50px;
+            color: var(--gold);
+            font-size: 1rem;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0.2; } }
+
+        .heart {
+            position: absolute;
+            color: rgba(139, 0, 0, 0.6);
+            pointer-events: none;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            to { transform: translateY(-110vh) rotate(360deg); }
+        }
+
+        #main-card::-webkit-scrollbar { width: 4px; }
+        #main-card::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
     </style>
 </head>
-<body onclick="hideAllMenus(); hideReactions();">
+<body onclick="initExperience()">
 
-    <div id="proToast"><i class="fa-solid fa-circle-exclamation" style="color:var(--primary)"></i> <span id="toastMsg">يرجى إكمال البيانات</span></div>
+    <audio id="bgMusic" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
 
-    <div id="fullImageOverlay" onclick="this.style.display='none'">
-        <div class="swiper mySwiper" style="width: 100%; height: 100%;">
-            <div class="swiper-wrapper" id="fullImageWrapper"></div>
-        </div>
+    <audio id="popSfx">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2571/magic-reveal-2571.wav" type="audio/mpeg">
+    </audio>
+
+    <div id="gift-wrapper" onclick="openGift(event)">
+        <div class="gift-lid" id="lid"></div>
+        <div class="gift-body"></div>
+        <div id="hint">دوسي هنا سُلطانة قلبي ✨</div>
     </div>
 
-    <div id="forwardSheet">
-        <div class="forward-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 800; font-size: 1.1rem;">تحويل إلى...</span>
-                <div style="display: flex; gap: 15px;">
-                    <i class="fa-solid fa-paper-plane" id="sendForwardBtn" style="color: var(--primary); font-size: 1.2rem; display: none;" onclick="executeForward()"></i>
-                    <span style="color: var(--danger); font-weight: bold;" onclick="closeForwardSheet()">إلغاء</span>
-                </div>
-            </div>
-            <div class="forward-search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="forwardSearchInput" placeholder="بحث عن اسم أو @معرف..." oninput="searchForwardList()">
-            </div>
-        </div>
-        <div class="forward-list" id="forwardListContainer"></div>
-    </div>
+    <div id="main-card">
+        <h1 class="card-title">إلى سُلطانة قلبي وكل دنيتي ❤️</h1>
+        <p class="card-text">يا بعد چبدي وكل ناسي ويا ضحكة سنيني الما جيت إلا بيج يا سُلطانة گلبي وكل دنيتي كل عام وإنتي الحب وكل عام وإنتي العافية اللي اتنفسها يا ترفة يا أم خدود اللي تكتل كتل يا بعد روحي والله لو بيدي أفرش لج عيوني درب وتمشين عليه براحتج يا ملكة البيت ويا أميرة روحي الما سكنها غيرج أحبج حب أهلنا الصافيين حب الفطرة الما يعرف چذب ولا نفاق يا طعم هيل بوسط چاي العصر يا ريحة طين المطر من يبلل تراب الحديقة يا نسمة هوى باردة بعز تموز تبرد على گلبي وتشفي غليلي إنتي الجبيرة بعيني وماكو بعدج بنية تهز شعرة بية يا هيبة يا كيمر عرب يا طعم العسل المصفى إنتِي الضحكة اللي ترد الروح وتجلي الهم عن صدري يا ديرة ورد ومستقر للبال يا شمس الشتا اللي تدفي وما تچوي يا شمعة تضوي ليلي المظلم وتدلي التايه بدربه والله لو تطلبين عيوني اگولج هاچ ذني عيوني fدوة لتراب رجلج يا نبض وريدي اللي يحييني وبدونج أصير جثة بلا روح يا أماني وسندي وكت الشدايد يا منوة الروح وراحة البال والضمير أحب مقالبج واحب سوالفج وأحب عصبيتج وأحب حتى عنادج اللي يجنني يا طفلة گلبي المدللة اللي ما أرضى عليها الهوى لو مر عالي إنتِي العوض عن كل ضيم شفته بحياتي وإنتِي الهدية اللي ربي رزقني بيها وسجدت شكر عليها ألف مرة يا ملاك بصورة بشر يا طهر السما بوسط غبرة الأرض أحبج بلهجة أهلنا وبلهفة العشاگ وبغيرة العراقي اللي ما يقبل أحد يباوع لوجهج يا فجر العيد وفرحة الجهال ويا ريحة بخور الدواوين الما تخلص هيبتها صرتي إدماني اللي ما أريد أتعافى منه وصرتي صلاتي ودعائي بكل سجدة يا بعد طوايفي كلهم يا شريكة النفس والروح والگلب إنتِي النص الثاني اللي لا ولله انتي حسين كامل مو نصف انتي عافيتي انتي كملتيني وخليتيني أحس بطعم الدنيا والله لو صار بيني وبينج بحور وجبال أهدهن وأجيج زحوف لأن ما أگدر أعيش لحظة بدونج يا غيمة مطر تسگي الورد ويا بسمة رضا تنهي كل زعلي أحبج لآخر يوم بعمري ولآخر قطرة بدمي ولحد ما يوريني التراب تبقين إنتِي الوحيدة اللي سكنت هاي الروح يا ضوى عيوني ويا ضحكة شفايفي يا أول عشك چواني وما ردت الفكة منه ويا آخر محطة بحياتي أريد ألمج بين إيدي وأضمج من عيون الناس الحسودة اللي ما ترحم يا حلاتج ويا براءتج ويا طيبة گلبج الصافي مثل الماي إنتِي الكنز اللي لكيته بعد صبر سنين وإنتِي السالفة الحلوة اللي ما أمل منها لو عشت ألف سنة أحبج حب ماتتخيلينه ولو قطره ابحر احبج حب الما يتغير لو دار الزمن وإنتِي "الچبيرة" الماكو فوگج حد يملي عيني غيرج يا عطر الهيل ويا بخور العيد يا نسمة ربيع تخضر غصان گلبي اليابسة كل سنة وإنتِي حبيبتي وكل سنة وإنتِي بگلبي باقية ومتربعة يا بعد حيل ومستحى ورجفة أيدين عاشگ ولهان بجمالج اللي ماله وصف ولا شبيه بالكون كله. 🌹❤️</p>
 
-    <div id="leaveConfirmPop" class="confirm-popup">
-        <h3 id="leaveConfirmTitle" style="text-align: center; color: var(--primary);">هل أنت متأكد؟</h3>
-        <p id="leaveConfirmMsg" style="text-align: center; color: #ccc;">عند الخروج سيتم حذف الدردشة من قائمتك.</p>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="executeLeave()" style="flex: 1; background: var(--danger); border: none; padding: 12px; border-radius: 12px; color: white; font-weight: 800;">موافق</button>
-            <button onclick="document.getElementById('leaveConfirmPop').style.display='none'" style="flex: 1; background: var(--glass); border: none; padding: 12px; border-radius: 12px; color: white;">إلغاء</button>
+        <div class="video-container">
+            <video class="custom-video" controls loop playsinline><source src="https://v19.tiktokcdn-us.com/68d7dbd13a21a9c6161d3cc53d216305/698fed01/video/tos/alisg/tos-alisg-pve-0037c001/owokPnhrDI1nChqwARFKoajfqCfsQfDQE4AQIw/"></video>
+            <video class="custom-video" controls loop playsinline><source src="https://v19.tiktokcdn-us.com/a6ec7394f0235be2900586232ac7738b/698feca6/video/tos/alisg/tos-alisg-pve-0037c001/oYQicGX3BETB6kyfAViQUvRxbBf1nBBIiMgVE5/"></video>
+            <video class="custom-video" controls loop playsinline><source src="https://v16m.tiktokcdn-us.com/aa004afb307fd4aeab39bddf67c9a1ec/698fec9a/video/tos/useast2a/tos-useast2a-ve-0068c002/osPkPiuEBQAPibPxhXEnOZULQ6DYIErSCBr8o/"></video>
+            <video class="custom-video" controls loop playsinline><source src="https://v19.tiktokcdn-us.com/e617ad9a03704a1d298ad06591a15f6a/698fec82/video/tos/alisg/tos-alisg-pve-0037c001/oUTgcBsIuOiQAtafCw66pqzpFyIpXAwCiEyAFk/"></video>
         </div>
     </div>
-
-    <div id="chatInfoPage" class="overlay-page">
-        <div class="header">
-            <i class="fa-solid fa-chevron-right" onclick="closeOverlays()"></i>
-            <span id="chatInfoTitle" style="font-weight: 800;">معلومات</span>
-            <span style="color:var(--primary); font-weight:bold; cursor:pointer;" onclick="saveChatChanges()">حفظ</span>
-        </div>
-        <div style="text-align:center; padding:30px;">
-            <div id="chatInfoPreview" style="width:100px; height:100px; border-radius:25px; border:2px solid var(--primary); margin:0 auto; background:#555 center/cover;"></div>
-            <label for="chatInfoImgInp" id="chanImgLabel" style="color:var(--primary); display:block; margin-top:15px; font-weight:bold; cursor:pointer;">تغيير الصورة</label>
-            <input type="file" id="chatInfoImgInp" hidden accept="image/*" onchange="handleChatInfoImg()">
-        </div>
-        
-        <div class="list-item">
-            <div class="input-row">
-                <span>الاسم</span>
-                <input type="text" id="infoChatName" placeholder="الاسم كحد اقصى 15 حرف" oninput="vName(this)">
-            </div>
-        </div>
-
-        <div class="list-item" id="nicknameRow">
-            <div class="input-row">
-                <span>الكنية</span>
-                <div style="display: flex; align-items: center; gap: 5px; width: 60%;">
-                    <input type="text" id="infoChatNickname" placeholder="إضافة كنية (15 حرف)" oninput="vName(this)" style="width: 100%;">
-                    <i class="fa-solid fa-chevron-left" style="font-size: 0.7rem; color: #888;"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="list-item">
-            <div class="input-row">
-                <span>المعرف (@)</span>
-                <input type="text" id="infoChatUser" placeholder="English only" oninput="vID(this)">
-            </div>
-            <p id="infoIdError" class="error-hint">هذا المعرف مستخدم بالفعل، اختر معرفاً آخر</p>
-        </div>
-
-        <div class="list-item" onclick="openBgSheet()" style="cursor: pointer;">
-            <div class="input-row">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fa-solid fa-image" style="color: var(--primary);"></i>
-                    <span>تعيين خلفية الدردشة</span>
-                </div>
-                <i class="fa-solid fa-chevron-left" style="color: #888; font-size: 0.8rem;"></i>
-            </div>
-        </div>
-
-        <div class="list-item" id="leaveOption" onclick="showLeaveConfirm()" style="margin-top: 20px; cursor: pointer; border-top: 1px solid var(--glass);">
-            <div class="input-row" style="justify-content: flex-start; gap: 15px; color: var(--danger);">
-                <i class="fa-solid fa-right-from-bracket" style="font-size: 1.2rem;"></i>
-                <span id="leaveText">مغادرة</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="bgActionSheet" onclick="event.stopPropagation()">
-        <h4 style="text-align: center; margin-bottom: 15px; color: var(--primary);">خلفية الدردشة</h4>
-        <button class="bg-action-btn" onclick="document.getElementById('bgFileInp').click()">
-            <span>ألبوم</span>
-            <i class="fa-solid fa-images"></i>
-        </button>
-        <button class="bg-action-btn" onclick="resetDefaultBg()">
-            <span>استعادة الصورة الافتراضية</span>
-            <i class="fa-solid fa-rotate-left"></i>
-        </button>
-        <button class="bg-action-btn" style="background:none; color:#888; justify-content: center;" onclick="this.parentElement.style.display='none'">إلغاء</button>
-        <input type="file" id="bgFileInp" hidden accept="image/*" onchange="startCropping(this)">
-    </div>
-
-    <div id="cropContainer">
-        <div class="header" style="background: #000;">
-            <i class="fa-solid fa-xmark" onclick="document.getElementById('cropContainer').style.display='none'"></i>
-            <span style="font-weight:800;">معاينة وقص</span>
-            <span style="color:var(--primary); font-weight:bold; cursor:pointer;" onclick="applyCrop()">حفظ</span>
-        </div>
-        <div style="flex:1; overflow:hidden; display:flex; align-items:center; justify-content:center;">
-            <img id="cropImage" src="" style="max-width:100%;">
-        </div>
-    </div>
-
-    <div id="chatImgModal">
-        <div style="display:flex; flex-direction: column; gap:10px;">
-            <div class="multi-preview-container" id="chatMultiPreview"></div>
-            <div style="flex:1">
-                <p style="font-weight: 800; font-size: 0.9rem; margin-bottom:5px;">إرسال صور (حتى 5)</p>
-                <input type="text" id="chatImgCaption" placeholder="اكتب نصاً مع الصور..." style="width:100%; background:rgba(255,255,255,0.05); color:white; border:none; border-radius:20px; padding:10px 15px; outline:none;">
-            </div>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px;">
-            <button onclick="confirmSendChatImg()" style="background:var(--primary); border:none; padding:8px 25px; border-radius:20px; font-weight:800; color:#000;">إرسال</button>
-            <button onclick="closeChatImgModal()" style="background:none; border:none; color:#888;">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="createChannelModal">
-        <div class="header">
-            <i class="fa-solid fa-chevron-right" onclick="document.getElementById('createChannelModal').style.display='none'"></i>
-            <span style="font-weight: 800;">إنشاء قناة</span>
-            <span style="color:var(--primary); font-weight:bold; cursor:pointer;" onclick="saveNewChannel()">إنشاء</span>
-        </div>
-        <div style="text-align:center; padding:30px;">
-            <div id="newChanPreview" style="width:100px; height:100px; border-radius:25px; border:2px solid var(--primary); margin:0 auto; background:#555 center/cover;"></div>
-            <label for="chanImgInp" style="color:var(--primary); display:block; margin-top:15px; font-weight:bold; cursor:pointer;">تعيين صورة القناة</label>
-            <input type="file" id="chanImgInp" hidden accept="image/*" onchange="handleChanImg()">
-        </div>
-        <div class="list-item">
-            <div class="input-row">
-                <span>اسم القناة</span>
-                <input type="text" id="chanName" placeholder="الاسم كحد اقصى 15 حرف" oninput="vName(this)">
-            </div>
-        </div>
-        <div class="list-item">
-            <div class="input-row">
-                <span>معرف القناة (@)</span>
-                <input type="text" id="chanUser" placeholder="English only" oninput="vID(this, 'chanIdError')">
-            </div>
-            <p id="chanIdError" class="error-hint">هذا المعرف مستخدم بالفعل، اختر معرفاً آخر</p>
-        </div>
-    </div>
-
-    <div id="createGroupModal">
-        <div class="header">
-            <i class="fa-solid fa-chevron-right" onclick="document.getElementById('createGroupModal').style.display='none'"></i>
-            <span style="font-weight: 800;">إنشاء مجموعة</span>
-            <span style="color:var(--primary); font-weight:bold; cursor:pointer;" onclick="saveNewGroup()">إنشاء</span>
-        </div>
-        <div style="text-align:center; padding:30px;">
-            <div id="newGroupPreview" style="width:100px; height:100px; border-radius:25px; border:2px solid var(--primary); margin:0 auto; background:#555 center/cover;"></div>
-            <label for="groupImgInp" style="color:var(--primary); display:block; margin-top:15px; font-weight:bold; cursor:pointer;">تعيين صورة المجموعة</label>
-            <input type="file" id="groupImgInp" hidden accept="image/*" onchange="handleGroupImg()">
-        </div>
-        <div class="list-item">
-            <div class="input-row">
-                <span>اسم المجموعة</span>
-                <input type="text" id="groupName" placeholder="الاسم كحد اقصى 15 حرف" oninput="vName(this)">
-            </div>
-        </div>
-        <div class="list-item">
-            <div class="input-row">
-                <span>معرف المجموعة (@)</span>
-                <input type="text" id="groupUser" placeholder="English only" oninput="vID(this, 'groupIdError')">
-            </div>
-            <p id="groupIdError" class="error-hint">هذا المعرف مستخدم بالفعل، اختر معرفاً آخر</p>
-        </div>
-    </div>
-
-    <div id="msgMenu" class="msg-menu-pop">
-        <div id="sentMsgOptions">
-            <button onclick="openEditMsgModal()">تعديل</button>
-            <button onclick="copyMsg()">نسخ</button>
-            <button onclick="openForwardSelection()">تحويل</button>
-            <button onclick="deleteMsg('me')">حذف لديك</button>
-            <button onclick="deleteMsg('all')" style="color:#ff5b5b">حذف لدى الجميع</button>
-        </div>
-        <div id="receivedMsgOptions">
-            <button onclick="copyMsg()">نسخ</button>
-            <button onclick="openForwardSelection()">تحويل</button>
-            <button onclick="deleteMsg('me')" style="color:#ff5b5b">حذف لديك</button>
-        </div>
-    </div>
-
-    <div id="editMsgModal" onclick="event.stopPropagation()">
-        <p style="font-weight: 800; font-size: 0.9rem; margin-bottom: 5px;">تعديل الرسالة</p>
-        <textarea id="editMsgInput" rows="3" style="width:100%; background:rgba(255,255,255,0.05); color:white; border:none; border-radius:12px; padding:12px; outline:none; resize:none;"></textarea>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:5px;">
-            <button onclick="submitMsgEdit()" style="background:var(--primary); border:none; padding:8px 20px; border-radius:20px; font-weight:800; color:#000;">تعديل</button>
-            <button onclick="closeEditMsgModal()" style="background:none; border:none; color:#888;">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="chatWindow">
-        <div id="chatCustomBg"></div>
-        <div class="chat-win-header">
-            <i class="fa-solid fa-arrow-right" onclick="closeChat()"></i>
-            <img id="winAvatar" class="chat-avatar" style="width:40px; height:40px;">
-            <div style="flex:1">
-                <div id="winName" style="font-weight:800;">اسم المستخدم</div>
-                <div style="font-size:0.7rem; color:var(--primary);">متصل الآن</div>
-            </div>
-            <i id="chatOptionsBtn" class="fa-solid fa-ellipsis-vertical" style="cursor: pointer; padding: 10px; display: block;" onclick="openChatInfo()"></i>
-        </div>
-        <div id="chatMessages"></div>
-        <div class="chat-input-area-container">
-            <div id="replyPreviewBox">
-                <p id="replyUserName">اسم الشخص</p>
-                <span id="replyTextContent">محتوى الرسالة...</span>
-                <i class="fa-solid fa-xmark close-reply" onclick="cancelReply()"></i>
-            </div>
-            <div class="chat-input-area" id="chatInputArea">
-                <i class="fa-solid fa-face-smile" style="color:#888; font-size:1.3rem;"></i>
-                <input type="text" id="chatInput" placeholder="رسالة...">
-                <label for="chatImgInp"><i class="fa-solid fa-image" style="color:#888; font-size:1.3rem; cursor:pointer;"></i></label>
-                <input type="file" id="chatImgInp" hidden accept="image/*" multiple onchange="openChatImgModal(this)">
-                <i class="fa-solid fa-paper-plane" onclick="sendDirectMsg()" style="color:var(--primary); font-size:1.3rem;"></i>
-            </div>
-        </div>
-    </div>
-
-    <nav>
-        <a href="#" onclick="showSection('games')" id="link-games" class="active"><i class="fa-solid fa-gamepad"></i><span>الألعاب</span></a>
-        <a href="#" onclick="showSection('rooms')" id="link-rooms"><i class="fa-solid fa-microphone-lines"></i><span>الغرف</span></a>
-        <a href="#" onclick="showSection('messages')" id="link-messages"><i class="fa-solid fa-envelope"></i><span>الرسائل</span></a>
-        <a href="#" onclick="showSection('posts')" id="link-posts"><i class="fa-solid fa-compass"></i><span>اكتشاف</span></a>
-        <a href="#" onclick="showSection('about')" id="link-about"><i class="fa-solid fa-user"></i><span>أنا</span></a>
-    </nav>
-
-    <div id="editPage" class="overlay-page">
-        <div class="header">
-            <i class="fa-solid fa-chevron-right" onclick="closeOverlays()"></i>
-            <span style="font-weight: 800;">تعديل المعلومات</span>
-            <span style="color:var(--primary); font-weight:bold; cursor:pointer;" onclick="saveProfile()">حفظ</span>
-        </div>
-        <div style="text-align:center; padding:30px;">
-            <div id="previewImg" style="width:100px; height:100px; border-radius:25px; border:2px solid var(--primary); margin:0 auto; background:#555 center/cover;"></div>
-            <label for="imgInp" style="color:var(--primary); display:block; margin-top:15px; font-weight:bold; cursor:pointer;">تغيير الصورة</label>
-            <input type="file" id="imgInp" hidden accept="image/*" onchange="handleProfileImg()">
-        </div>
-        <div class="list-item">
-            <div class="input-row">
-                <span>الاسم</span>
-                <input type="text" id="inName" placeholder="الاسم كحد اقصى 15 حرف" oninput="vName(this)">
-            </div>
-        </div>
-        <div class="list-item">
-            <div class="input-row">
-                <span>المعرف (ID)</span>
-                <input type="text" id="inUser" placeholder="English only" oninput="vID(this, 'idError')">
-            </div>
-            <p id="idError" class="error-hint">هذا المعرف مستخدم بالفعل، اختر معرفاً آخر</p>
-        </div>
-    </div>
-
-    <div id="editPostModal" onclick="event.stopPropagation()">
-        <textarea id="editPostInput" rows="4" style="width:100%; background:rgba(255,255,255,0.05); color:white; border:none; border-radius:12px; padding:12px; outline:none; resize:none;"></textarea>
-        <div id="editPostPreview" class="preview-img-container" style="display:block; margin-bottom: 10px;">
-            <img id="editPostImgTag" src="" style="display:none;">
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label for="editPostImgInp"><i class="fa-solid fa-image" style="color:#4caf50; cursor:pointer; font-size:1.5rem;"></i></label>
-            <input type="file" id="editPostImgInp" hidden accept="image/*" onchange="handleEditPostImg(this)">
-            <div style="display:flex; gap:10px">
-                <button onclick="submitPostEdit()" style="background:var(--primary); border:none; padding:10px 25px; border-radius:25px; font-weight:800; color:#000;">تعديل</button>
-                <button onclick="closeEditPostModal()" style="background:none; border:none; color:#888;">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="settingsPage" class="overlay-page">
-        <div class="header"><i class="fa-solid fa-chevron-right" onclick="closeOverlays()"></i><span style="font-weight: 800;">الإعدادات</span><div></div></div>
-        <div class="list-item" onclick="toggleTheme()" style="cursor:pointer; flex-direction: row; justify-content: space-between;"><span>الوضع الليلي / النهاري</span><i id="modeIco" class="fa-solid fa-moon" style="color:var(--primary);"></i></div>
-    </div>
-
-    <div id="commentModal" onclick="event.stopPropagation()">
-        <p id="replyIndicator" style="font-size: 0.75rem; color: #4caf50; display: none; margin-bottom: 5px;"></p>
-        <textarea id="commentInput" rows="3" placeholder="اكتب تعليقك هنا..." style="width:100%; background:rgba(255,255,255,0.05); color:white; border:none; border-radius:12px; padding:12px; outline:none; resize:none;"></textarea>
-        <div style="display:flex; justify-content:flex-end; gap:10px">
-            <button onclick="submitComment()" style="background:var(--primary); border:none; padding:10px 25px; border-radius:25px; font-weight:800; color:#000;">نشر</button>
-            <button onclick="closeCommentModal()" style="background:none; border:none; color:#888;">إلغاء</button>
-        </div>
-    </div>
-
-    <section id="games" class="active"><h1 style="padding:40px; color:var(--primary); font-weight:800; font-size:2rem;">WeStars</h1></section>
-
-    <section id="posts">
-        <div class="tiktok-tabs">
-            <span class="tiktok-tab active" onclick="switchTikTokTab('my-posts', this)">منشوراتي</span>
-            <span class="tiktok-tab" onclick="switchTikTokTab('friends', this)">أصدقائي</span>
-            <span class="tiktok-tab" onclick="switchTikTokTab('general', this)">عام</span>
-        </div>
-
-        <div class="moments-container">
-            <div id="my-posts" class="tab-content active">
-                <div class="publish-box">
-                    <div style="display:flex; width:100%; align-items:center; gap:12px;">
-                        <div class="profile-avatar user-avatar-sync" style="width:45px; height:45px; border-radius:12px;"></div>
-                        <input type="text" id="postInput" placeholder="شارك لحظة جديدة..." style="flex:1; background:transparent; border:none; outline:none; color:#fff;">
-                        <label for="postImg"><i class="fa-solid fa-image" style="color:#4caf50; cursor:pointer; font-size:1.2rem;"></i></label>
-                        <input type="file" id="postImg" hidden accept="image/*" multiple onchange="handlePostImg(this)">
-                        <i class="fa-solid fa-paper-plane" style="color:var(--primary); margin-right:12px; font-size:1.2rem; cursor:pointer;" onclick="addNewPost()"></i>
-                    </div>
-                    <div id="publishPreview" class="multi-preview-container" style="display: none;"></div>
-                </div>
-                <div id="momentsList"></div>
-            </div>
-
-            <div id="friends" class="tab-content">
-                <p style="text-align: center; color: #888; padding: 40px;">منشورات الأصدقاء تظهر هنا...</p>
-            </div>
-
-            <div id="general" class="tab-content">
-                <p style="text-align: center; color: #888; padding: 40px;">اكتشف منشورات العالم...</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="about">
-        <div class="profile-container">
-            <div class="profile-top-bar">
-                <i class="fa-solid fa-chevron-right" style="color:#888; font-size:1.3rem; cursor:pointer;" onclick="openOverlay('editPage')"></i>
-                <div class="profile-user-side">
-                    <div class="profile-avatar" id="mainImg"></div>
-                    <div class="profile-info-text">
-                        <h2 id="displayName">7USSEIN</h2>
-                        <div class="lvl-container"><span>10/390</span><div class="xp-bar-bg"><div class="xp-bar-fill"></div></div><span class="lvl-badge">Lv.34</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-list">
-                <div class="menu-item"><span>النتائج</span><div class="item-left"><i class="fa-solid fa-trophy" style="color:#4a90e2"></i><i class="fa-solid fa-chevron-left"></i></div></div>
-                <div class="menu-item"><span>الزوار</span><div class="item-left"><i class="fa-solid fa-eye" style="color:#00d4ff"></i><i class="fa-solid fa-chevron-left"></i></div></div>
-                <div class="menu-item"><span>نوبل</span><div class="item-left"><i class="fa-solid fa-crown" style="color:#fbc02d"></i><i class="fa-solid fa-chevron-left"></i></div></div>
-                <div class="menu-item"><span>آي دي مميز</span><div class="item-left"><i class="fa-solid fa-id-card" style="color:#ff7eb3"></i><i class="fa-solid fa-chevron-left"></i></div></div>
-                <div class="menu-item" onclick="openOverlay('settingsPage')"><span>الإعدادات</span><div class="item-left"><i class="fa-solid fa-gear" style="color:#888"></i><i class="fa-solid fa-chevron-left"></i></div></div>
-            </div>
-        </div>
-    </section>
-
-    <section id="rooms"><p style="padding:40px">الغرف قريباً...</p></section>
-
-    <section id="messages">
-        <div class="chat-list-container">
-            <div class="chat-header">
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <i class="fa-solid fa-plus" style="font-size:1.2rem; cursor:pointer;" onclick="togglePlusMenu(event)"></i>
-                    <i class="fa-solid fa-magnifying-glass" style="font-size:1.2rem; cursor:pointer;" onclick="toggleSearchBar()"></i>
-                    <div id="plusMenu" class="plus-menu">
-                        <button onclick="openCreateChannel()">إنشاء قناة</button>
-                        <button onclick="openCreateGroup()">إنشاء مجموعة</button>
-                        <button onclick="alert('قريباً...')">إضافة صديق</button>
-                    </div>
-                </div>
-                <span style="font-weight:800; font-size:1.1rem; color:var(--text); margin-right: auto;" id="chatTitle">الرسائل</span>
-            </div>
-            <div id="searchContainer">
-                <input type="text" id="searchInput" placeholder="ابحث عن الاسم أو الكنية أو المعرف..." oninput="searchChats()">
-            </div>
-            <div id="chatsContainer"></div>
-        </div>
-    </section>
-
-    <input type="text" id="hiddenEmojiTrigger" style="position:fixed; opacity:0; pointer-events:none;">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <script>
-        // --- تهيئة Firebase بناءً على رابطك ---
-        const firebaseConfig = {
-            databaseURL: "https://westrts-d4078-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const dbRef = firebase.database();
+        let isStarted = false;
 
-        let defaultChats = [
-            { id: 1, name: "عباس بيس | الرسمي", user_id: "abbas1", messages: [], avatar: "https://i.pravatar.cc/150?u=1", isChannel: false, owner: "abbas1" },
-            { id: 2, name: "شروحات كيرا", user_id: "kira2", messages: [], avatar: "https://i.pravatar.cc/150?u=2", isChannel: false, owner: "kira2" },
-            { id: 3, name: "توزيع رصيد مجانا", user_id: "free3", messages: [], avatar: "https://i.pravatar.cc/150?u=3", isChannel: false, owner: "free3" }
-        ];
-
-        let chatData = JSON.parse(localStorage.getItem('westars_chats')) || defaultChats;
-        let activeChatId = null, selectedMsgIdx = -1, tempChanImg = "", tempGroupImg = "", tempChatInfoImg = "";
-        let pendingChatImgs = []; 
-        let cropper = null;
-        let swiper = null;
-        let replyingToMsg = null;
-        let touchStartX = 0;
-
-        function getArabicTime() {
-            const days = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-            const now = new Date();
-            const dayName = days[now.getDay()];
-            const dateStr = now.toLocaleDateString('ar-EG', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/');
-            const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true });
-            return `${dayName} ${dateStr} ${timeStr}`;
-        }
-
-        function saveChats() { localStorage.setItem('westars_chats', JSON.stringify(chatData)); }
-
-        function showToast(msg) {
-            const toast = document.getElementById('proToast');
-            document.getElementById('toastMsg').innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        function isUserIdTaken(userId, excludeChatId = null) {
-            const existsInChats = chatData.some(c => c.user_id === userId && c.id !== excludeChatId);
-            const myPersonalId = localStorage.getItem('user_id');
-            if (userId === myPersonalId && excludeChatId !== 'me') return true;
-            return existsInChats;
-        }
-
-        function vID(el, errorId) {
-            el.value = el.value.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-            const errorHint = document.getElementById(errorId);
-            if (isUserIdTaken(el.value, (errorId === 'idError' ? 'me' : null))) {
-                if(errorHint) errorHint.style.display = 'block';
-            } else {
-                if(errorHint) errorHint.style.display = 'none';
+        function initExperience() {
+            if (!isStarted) {
+                document.getElementById('bgMusic').play().catch(() => {});
+                isStarted = true;
             }
         }
 
-        function togglePlusMenu(e) {
+        function openGift(e) {
             e.stopPropagation();
-            hideAllMenus();
-            const menu = document.getElementById('plusMenu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            const lid = document.getElementById('lid');
+            const gift = document.getElementById('gift-wrapper');
+            const card = document.getElementById('main-card');
+            const sfx = document.getElementById('popSfx');
+
+            sfx.play();
+            lid.style.transform = 'translateY(-180px) rotate(15deg)';
+            lid.style.opacity = '0';
+
+            setTimeout(() => {
+                gift.style.display = 'none';
+                card.style.display = 'block';
+            }, 500);
         }
 
-        function openCreateChannel() {
-            document.getElementById('plusMenu').style.display = 'none';
-            document.getElementById('createChannelModal').style.display = 'flex';
+        function createHeart() {
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.top = '105vh';
+            h.style.fontSize = Math.random() * 20 + 10 + 'px';
+            h.style.animationDuration = Math.random() * 3 + 4 + 's';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 7000);
         }
-
-        function openCreateGroup() {
-            document.getElementById('plusMenu').style.display = 'none';
-            document.getElementById('createGroupModal').style.display = 'flex';
-        }
-
-        function handleChanImg() {
-            const r = new FileReader();
-            r.onload = (e) => {
-                tempChanImg = e.target.result;
-                document.getElementById('newChanPreview').style.backgroundImage = `url(${tempChanImg})`;
-            };
-            r.readAsDataURL(document.getElementById('chanImgInp').files[0]);
-        }
-
-        function handleGroupImg() {
-            const r = new FileReader();
-            r.onload = (e) => {
-                tempGroupImg = e.target.result;
-                document.getElementById('newGroupPreview').style.backgroundImage = `url(${tempGroupImg})`;
-            };
-            r.readAsDataURL(document.getElementById('groupImgInp').files[0]);
-        }
-
-        function saveNewChannel() {
-            const name = document.getElementById('chanName').value.trim();
-            const user = document.getElementById('chanUser').value.trim();
-            if(!name || !user || !tempChanImg) return showToast("يرجى إكمال البيانات");
-            if (isUserIdTaken(user)) return showToast("المعرف مستخدم بالفعل!");
-            const newId = Date.now();
-            const newChan = { id: newId, name: name, user_id: user, messages: [], avatar: tempChanImg, isChannel: true, isGroup: false, owner: localStorage.getItem('user_id') || "7USSEIN" };
-            chatData.unshift(newChan); saveChats(); renderChats();
-            document.getElementById('createChannelModal').style.display = 'none';
-            openChat(newId);
-        }
-
-        function saveNewGroup() {
-            const name = document.getElementById('groupName').value.trim();
-            const user = document.getElementById('groupUser').value.trim();
-            if(!name || !user || !tempGroupImg) return showToast("يرجى إكمال البيانات");
-            if (isUserIdTaken(user)) return showToast("المعرف مستخدم بالفعل!");
-            const newId = Date.now();
-            const newGroup = { id: newId, name: name, user_id: user, messages: [], avatar: tempGroupImg, isGroup: true, isChannel: false, owner: localStorage.getItem('user_id') || "7USSEIN" };
-            chatData.unshift(newGroup); saveChats(); renderChats();
-            document.getElementById('createGroupModal').style.display = 'none';
-            openChat(newId);
-        }
-
-        function toggleSearchBar() {
-            const bar = document.getElementById('searchContainer');
-            bar.style.display = bar.style.display === 'block' ? 'none' : 'block';
-            if(bar.style.display === 'block') document.getElementById('searchInput').focus();
-        }
-
-        function searchChats() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = chatData.filter(c => c.name.toLowerCase().includes(query) || (c.nickname && c.nickname.toLowerCase().includes(query)) || c.user_id.toLowerCase().includes(query));
-            renderChats(filtered);
-        }
-
-        function renderChats(data = chatData) {
-            const container = document.getElementById('chatsContainer');
-            container.innerHTML = data.map(chat => {
-                const visibleMessages = chat.messages.filter(m => !m.deletedForMe);
-                const lastMsg = visibleMessages.length > 0 ? visibleMessages[visibleMessages.length-1] : {text: chat.isChannel ? "تم إنشاء القناة" : (chat.isGroup ? "تم إنشاء المجموعة" : "لا توجد رسائل"), time: ""};
-                let msgPreview = lastMsg.text || (lastMsg.imgs ? "صورة" : "");
-                return `<div class="chat-item" onclick="openChat(${chat.id})">
-                    <img src="${chat.avatar}" class="chat-avatar">
-                    <div class="chat-info">
-                        <div class="chat-info-top"><span class="chat-name">${chat.nickname || chat.name}</span><span class="chat-time">${lastMsg.time ? lastMsg.time.split(' ').slice(-1) : ''}</span></div>
-                        <span class="chat-last-msg">${msgPreview}</span>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        // --- وظائف Firebase للمراسلة ---
-        function listenToMessages(chatId) {
-            dbRef.ref('chats/' + chatId).on('value', (snapshot) => {
-                const firebaseMsgs = snapshot.val() || [];
-                const chat = chatData.find(c => c.id === chatId);
-                if (chat) {
-                    chat.messages = Object.values(firebaseMsgs);
-                    if (activeChatId === chatId) renderMessages();
-                    renderChats();
-                }
-            });
-        }
-
-        function openChat(id) {
-            activeChatId = id;
-            const chat = chatData.find(c => c.id === id);
-            document.getElementById('winName').innerText = chat.nickname || chat.name;
-            document.getElementById('winAvatar').src = chat.avatar;
-            document.getElementById('chatWindow').style.display = 'flex';
-            
-            // بدء الاستماع لفايربيس لهذا الشات
-            listenToMessages(id);
-            
-            const savedBg = localStorage.getItem('chat_bg_' + id);
-            const bg = document.getElementById('chatCustomBg');
-            if(savedBg) { bg.style.backgroundImage = `url(${savedBg})`; bg.style.display = 'block'; }
-            else bg.style.display = 'none';
-        }
-
-        function sendDirectMsg() {
-            const inp = document.getElementById('chatInput');
-            const txt = inp.value.trim();
-            if(!txt || !activeChatId) return;
-            
-            const myId = localStorage.getItem('user_id') || "7USSEIN";
-            let msgObj = { 
-                type: 'sent', sender: myId, text: txt, 
-                time: getArabicTime(), reactions: [], deletedForMe: false 
-            };
-            
-            if (replyingToMsg) {
-                msgObj.replyTo = { user: replyingToMsg.type === 'sent' ? 'أنت' : 'الطرف الآخر', text: replyingToMsg.text || "صورة", idx: replyingToMsg.originalIdx };
-                cancelReply();
-            }
-
-            // الرفع لفايربيس
-            dbRef.ref('chats/' + activeChatId).push(msgObj);
-            inp.value = "";
-        }
-
-        function renderMessages() {
-            const chat = chatData.find(c => c.id === activeChatId);
-            if(!chat) return;
-            const box = document.getElementById('chatMessages');
-            box.innerHTML = chat.messages.map((m, idx) => {
-                if (m.deletedForMe) return '';
-                let imageHtml = "";
-                if (m.imgs && m.imgs.length > 0) {
-                    imageHtml = `<img src="${m.imgs[0]}" style="width:100%; border-radius:15px; margin-bottom:5px;">`;
-                }
-                const isMe = (m.sender === (localStorage.getItem('user_id') || "7USSEIN"));
-                return `<div class="msg-bubble ${isMe ? 'msg-sent' : 'msg-received'}" id="msg-${idx}">
-                    ${m.replyTo ? `<div class="quoted-msg"><b>${m.replyTo.user}:</b> ${m.replyTo.text}</div>` : ''}
-                    <div class="msg-content-wrapper" onclick="showQuickReactions(event, ${idx})">
-                        ${imageHtml} ${m.text ? `<div>${m.text}</div>` : ''}
-                        <span class="msg-time">${m.time}</span>
-                    </div>
-                </div>`;
-            }).join('');
-            box.scrollTop = box.scrollHeight;
-        }
-
-        // --- باقي الوظائف (تعديل، حذف، صور) بقيت كما هي لضمان عمل الواجهة ---
-        function closeChat() { document.getElementById('chatWindow').style.display = 'none'; activeChatId = null; cancelReply(); }
-        function cancelReply() { replyingToMsg = null; document.getElementById('replyPreviewBox').style.display = 'none'; }
-        function hideAllMenus() { document.querySelectorAll('.post-menu, .comment-pop, .msg-menu-pop, .plus-menu').forEach(m => m.style.display = 'none'); }
-        function hideReactions() { const active = document.getElementById('activeReactions'); if(active) active.remove(); }
-        function showQuickReactions(e, idx) { e.stopPropagation(); }
-        function openOverlay(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeOverlays() { document.querySelectorAll('.overlay-page').forEach(o => o.style.display = 'none'); }
-
-        // --- نظام اللحظات (Moments) مع فايربيس ---
-        let moments = [];
-        function listenToMoments() {
-            dbRef.ref('moments').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if(data) {
-                    moments = Object.values(data).reverse();
-                    renderMoments();
-                }
-            });
-        }
-
-        function addNewPost() {
-            const inp = document.getElementById('postInput');
-            if(!inp.value.trim() && !tempImgs.length) return;
-            const newPost = {
-                name: localStorage.getItem('user_name')||"7USSEIN", 
-                avatar: localStorage.getItem('user_img')||"",
-                text: inp.value, imgs: [...tempImgs], 
-                time: new Date().toLocaleString('ar-EG'), likes: 0, isLiked: false, commentList: []
-            };
-            dbRef.ref('moments').push(newPost).then(() => {
-                inp.value = ""; tempImgs = []; 
-                document.getElementById('publishPreview').style.display = 'none';
-            });
-        }
-
-        function renderMoments() {
-            const list = document.getElementById('momentsList');
-            list.innerHTML = moments.map((m, pIdx) => `
-                <div class="moment-card">
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                        <div class="profile-avatar" style="width:40px; height:40px; border-radius:10px; background-image:url(${m.avatar})"></div>
-                        <div><p style="font-weight:800; font-size:0.9rem;">${m.name}</p><p style="font-size:0.65rem; color:#888;">${m.time}</p></div>
-                    </div>
-                    <p style="margin:12px 0; font-size:0.95rem;">${m.text}</p>
-                    <div style="display:flex; gap:25px; border-top:1px solid var(--glass); padding-top:10px;">
-                        <span style="color:#888;"><i class="fa-solid fa-heart"></i> ${m.likes}</span>
-                        <span style="color:#888;"><i class="fa-solid fa-comment"></i> ${m.commentList ? m.commentList.length : 0}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function showSection(id) {
-            document.querySelectorAll('section').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
-            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-            const target = document.getElementById(id);
-            target.style.display = 'flex';
-            setTimeout(() => target.classList.add('active'), 10);
-            const activeLink = document.getElementById('link-' + id);
-            if(activeLink) activeLink.classList.add('active');
-            if(id === 'messages') renderChats();
-        }
-
-        function toggleTheme() { 
-            document.body.classList.toggle('light-mode'); 
-            const isL = document.body.classList.contains('light-mode');
-            document.getElementById('modeIco').className = isL ? "fa-solid fa-sun" : "fa-solid fa-moon";
-        }
-
-        function handleProfileImg() { 
-            const r = new FileReader(); 
-            r.onload = (e) => { localStorage.setItem('user_img', e.target.result); location.reload(); }; 
-            r.readAsDataURL(document.getElementById('imgInp').files[0]); 
-        }
-        
-        function saveProfile() { 
-            const n = document.getElementById('inName').value.trim(); 
-            const u = document.getElementById('inUser').value.trim(); 
-            localStorage.setItem('user_name', n || "7USSEIN"); 
-            localStorage.setItem('user_id', u); location.reload(); 
-        }
-
-        window.onload = () => {
-            const n = localStorage.getItem('user_name') || "7USSEIN";
-            document.getElementById('displayName').innerText = n;
-            document.getElementById('inName').value = n;
-            document.getElementById('inUser').value = localStorage.getItem('user_id') || "";
-            if(localStorage.getItem('user_img')) {
-                const url = `url(${localStorage.getItem('user_img')})`;
-                document.getElementById('mainImg').style.backgroundImage = url;
-                document.getElementById('previewImg').style.backgroundImage = url;
-                document.querySelectorAll('.user-avatar-sync').forEach(e => e.style.backgroundImage = url);
-            }
-            listenToMoments();
-            renderChats();
-        };
+        setInterval(createHeart, 300);
     </script>
 </body>
 </html>
